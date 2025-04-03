@@ -8,15 +8,17 @@ from dotenv import load_dotenv
 
 # # Load environment variables
 # load_dotenv()
-openrouter_api_key= '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'
-# data_loc='/content/sample_data/california_housing_train.csv'
+
 
 # Page configuration
 st.set_page_config(
     page_title="AI Data Analysis Agent",
-    page_icon="📊",
+    page_icon="analysisagent\resources\logo.jpg",
     layout="wide"
 )
+
+st.logo("analysisagent\resources\logo.jpg", size="medium")
+
 
 # App title and description
 st.title("AI Data Analysis Agent")
