@@ -60,14 +60,28 @@ if uploaded_file is not None and not st.session_state.file_uploaded:
                 base_url="https://openrouter.ai/api/v1",
                 streaming=True
             )
+
+            prompt_template = PromptTemplate(
+                input_variables=["input"],
+                template="You are a helpful assistant. Answer the following question as accurately as possible:\n\n{input}"
+            )
+
+
+            output_parser = OutputFixingParser.from_llm(
+                llm=llm,  # Your LLM instance
+                parser=None,  # Replace with your desired parser if applicable
+                prompt=prompt_template,
+                max_retries=2  # Number of retries in case of failure
+            )
             
             # Create the pandas dataframe agent
             st.session_state.agent = create_pandas_dataframe_agent(
                 llm,
-                st.session_state.df,
-                verbose=False,
-                handle_parsing_errors=True,
-                allow_dangerous_code=True
+                df,
+                verbose=True,
+                handle_parsing_errors=True,  # Retry parsing errors automatically
+                allow_dangerous_code=True,
+                output_parser=output_parser  # Attach the OutputFixingParser
             )
             st.success("AI Agent initialized and ready to answer questions!")
         else:
