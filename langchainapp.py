@@ -8,17 +8,16 @@ from dotenv import load_dotenv
 
 # # Load environment variables
 # load_dotenv()
-openrouter_api_key= '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'
-# data_loc='/content/sample_data/california_housing_train.csv'
+
 
 # Page configuration
 st.set_page_config(
     page_title="AI Data Analysis Agent",
-    page_icon="analysisagent\resources\logo.jpg",
+    # page_icon=r"analysisagent\resources\logo.jpg",
     layout="wide"
 )
 
-st.logo("analysisagent\resources\logo.jpg", size="medium")
+# st.logo(r"analysisagent\resources\logo.jpg", size="medium")
 
 
 # App title and description
@@ -30,8 +29,7 @@ The AI agent will translate your questions into code, execute it, and return the
 
 # Sidebar for API key input and configuration
 st.sidebar.header("Configuration")
-# openrouter_api_key = st.sidebar.text_input("Enter your OpenRouter API Key", type="password")
-openrouter_api_key=openrouter_api_key
+openrouter_api_key = st.sidebar.text_input("Enter your OpenRouter API Key", type="password")
 st.sidebar.markdown("This app uses Google's Gemini 2.5 model through OpenRouter.")
 
 # Initialize session state variables if they don't exist
