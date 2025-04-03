@@ -13,11 +13,11 @@ from dotenv import load_dotenv
 # Page configuration
 st.set_page_config(
     page_title="AI Data Analysis Agent",
-    page_icon="analysisagent\resources\logo.jpg",
+    # page_icon=r"analysisagent\resources\logo.jpg",
     layout="wide"
 )
 
-st.logo("analysisagent\resources\logo.jpg", size="medium")
+# st.logo(r"analysisagent\resources\logo.jpg", size="medium")
 
 
 # App title and description
