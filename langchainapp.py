@@ -30,7 +30,6 @@ The AI agent will translate your questions into code, execute it, and return the
 # Sidebar for API key input and configuration
 st.sidebar.header("Configuration")
 openrouter_api_key = st.sidebar.text_input("Enter your OpenRouter API Key", type="password")
-
 st.sidebar.markdown("This app uses Google's Gemini 2.5 model through OpenRouter.")
 
 # Initialize session state variables if they don't exist
