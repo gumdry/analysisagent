@@ -76,57 +76,37 @@ else:
                 st.markdown(prompt)
 
             with st.chat_message("assistant"):
+                
                 st_callback = StreamlitCallbackHandler(st.container())
-                output = ""  # Initialize output variable
                 try:
                     response = agent.invoke(
                         {"input": prompt},
                         config={"callbacks": [st_callback]}
                     )
                     
-                    # Improved parsing of the response
-                    if isinstance(response, dict):
-                        # Extract final answer
-                        final_answer = response.get("output", "")
-                        
-                        # Extract action inputs from intermediate steps
-                        action_inputs = []
-                        if "intermediate_steps" in response:
-                            for step in response["intermediate_steps"]:
-                                if isinstance(step, tuple) and len(step) > 0:
-                                    action = step[0]
-                                    if hasattr(action, 'tool_input'):
-                                        action_inputs.append(str(action.tool_input))
-                        
-                        # Format the output
-                        output = f"**Final Answer**: {final_answer}"
-                        if action_inputs:
-                            output += "\n\n**Action Inputs**:\n" + "\n".join(
-                                [f"- {input}" for input in action_inputs]
-                            )
+                    # Extract final answer
+                    final_answer = response.get("output", "")
                     
-                    else:
-                        # Fallback parsing if response format is unexpected
-                        response_text = str(response)
-                        final_answer_match = re.search(r'Final Answer:\s*(.*)', response_text)
-                        action_input_match = re.search(r'Action Input:\s*(.*)', response_text)
-                        
-                        final_answer = final_answer_match.group(1) if final_answer_match else response_text
-                        action_input = action_input_match.group(1) if action_input_match else ""
-                        
-                        output = f"**Final Answer**: {final_answer}"
-                        if action_input:
-                            output += f"\n\n**Action Input**:\n- {action_input}"
+                    # Extract action inputs from intermediate steps
+                    action_inputs = []
+                    for step in response.get("intermediate_steps", []):
+                        if len(step) > 0 and hasattr(step[0], 'tool_input'):
+                            action_inputs.append(step[0].tool_input)
+                    
+                    # Format output
+                    output = f"**Final Answer**: {final_answer}\n\n"
+                    if action_inputs:
+                        output += "**Code Used**:\n```python\n"
+                        output += "\n".join([str(input) for input in action_inputs])
+                        output += "\n```"
                     
                     st.markdown(output)
 
                 except Exception as e:
-                    error_msg = f"Error processing response: {str(e)}. The agent returned:\n\n{str(response) if 'response' in locals() else 'No response'}\n\nPlease try rephrasing your question."
-                    st.markdown(error_msg)
-                    output = error_msg
-        # st.session_state.messages.append({"role": "assistant", "content": response["output"]})
+                    output = f"Error: {str(e)}. Please try rephrasing your question."
+                    st.markdown(output)
+
             st.session_state.messages.append({"role": "assistant", "content": output})
-       
 
     else:
         st.info("Please upload a CSV file to get started.")
