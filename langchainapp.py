@@ -14,7 +14,8 @@ openrouter_api_key = 'sk-or-v1-bd71f6a4765152358de0c829a81afec0d5be81498c4cbdcd6
 # Streamlit app setup
 st.title("Data Analysis Agent with Streamlit")
 st.sidebar.title("Settings")
-api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
+# api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
+api_key= openrouter_api_key
 
 if not api_key:
     st.error("Please enter your OpenRouter API Key in the sidebar.")
