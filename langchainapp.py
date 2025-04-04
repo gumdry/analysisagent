@@ -54,6 +54,7 @@ else:
             df,
             verbose=False,  # Disable verbose logging
             handle_parsing_errors=True,
+            allow_dangerous_code=True,
             return_intermediate_steps=True
         )
 
