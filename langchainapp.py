@@ -9,7 +9,6 @@ from langchain.output_parsers.fix import OutputFixingParser
 from langchain.prompts import PromptTemplate
 
 # Load environment variables
-load_dotenv()
 openrouter_api_key = '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'
 
 # Streamlit app setup
