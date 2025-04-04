@@ -9,8 +9,7 @@ from langchain.output_parsers.fix import OutputFixingParser
 from langchain.prompts import PromptTemplate
 
 # Load environment variables
-openrouter_api_key = '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'
-
+openrouter_api_key = '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'
 # Streamlit app setup
 st.title("Data Analysis Agent with Streamlit")
 st.sidebar.title("Settings")
