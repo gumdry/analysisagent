@@ -9,11 +9,15 @@ from langchain.output_parsers.fix import OutputFixingParser
 from langchain.prompts import PromptTemplate
 
 # Load environment variables
-openrouter_api_key = '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'
+# openrouter_api_key = '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'
 # Streamlit app setup
 st.title("Data Analysis Agent with Streamlit")
 st.sidebar.title("Settings")
+<<<<<<< HEAD
+api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
+=======
 # api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
+>>>>>>> 473d7eb5949fb22ccd20855e507e6721567d9a82
 api_key =openrouter_api_key
 if not api_key:
     
