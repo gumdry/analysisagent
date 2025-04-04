@@ -116,7 +116,7 @@ else:
                 st.markdown(output)
 
         # st.session_state.messages.append({"role": "assistant", "content": response["output"]})
-        st.session_state.messages.append({"role": "assistant", "content": output})
+            st.session_state.messages.append({"role": "assistant", "content": output})
        
 
     else:
