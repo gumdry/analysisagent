@@ -71,50 +71,59 @@ else:
                 st.markdown(message["content"])
 
         if prompt := st.chat_input("Ask a question about your data:"):
-            # st.session_state.messages.append({"role": "user", "content": prompt})
-            # with st.chat_message("user"):
-            #     st.markdown(prompt)
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
 
-            # with st.chat_message("assistant"):
-            #     callback = StreamlitCallbackHandler(st.container())
-
-            #     response = agent.invoke(
-            #         {"input": prompt},
-            #         config={"callbacks": [callback], "handle_parsing_errors": True}
-            #     )
-
-            #     st.markdown(response["output"])
-            st_callback = StreamlitCallbackHandler(st.container())
-            try:
-                response = agent.invoke(
-                    {"input": prompt},
-                    config={"callbacks": [st_callback]}
-                )
-                
-                # Extract components from response
-                final_answer = response["output"]
-                intermediate_steps = response["intermediate_steps"]
-                
-                # Extract action inputs from intermediate steps
-                action_inputs = [
-                    str(step[0].tool_input) 
-                    for step in intermediate_steps 
-                    if step and hasattr(step[0], 'tool_input')
-                ]
-                
-                # Format the output
-                formatted_output = f"**Final Answer**: {final_answer}"
-                if action_inputs:
-                    formatted_output += "\n\n**Action Inputs**:\n" + "\n".join(
-                        [f"- {input}" for input in action_inputs]
+            with st.chat_message("assistant"):
+                st_callback = StreamlitCallbackHandler(st.container())
+                output = ""  # Initialize output variable
+                try:
+                    response = agent.invoke(
+                        {"input": prompt},
+                        config={"callbacks": [st_callback]}
                     )
-                
-                st.markdown(formatted_output)
-                output = formatted_output
-            except Exception as e:
-                output = f"Error: {str(e)}. Please try rephrasing your question."
-                st.markdown(output)
+                    
+                    # Improved parsing of the response
+                    if isinstance(response, dict):
+                        # Extract final answer
+                        final_answer = response.get("output", "")
+                        
+                        # Extract action inputs from intermediate steps
+                        action_inputs = []
+                        if "intermediate_steps" in response:
+                            for step in response["intermediate_steps"]:
+                                if isinstance(step, tuple) and len(step) > 0:
+                                    action = step[0]
+                                    if hasattr(action, 'tool_input'):
+                                        action_inputs.append(str(action.tool_input))
+                        
+                        # Format the output
+                        output = f"**Final Answer**: {final_answer}"
+                        if action_inputs:
+                            output += "\n\n**Action Inputs**:\n" + "\n".join(
+                                [f"- {input}" for input in action_inputs]
+                            )
+                    
+                    else:
+                        # Fallback parsing if response format is unexpected
+                        response_text = str(response)
+                        final_answer_match = re.search(r'Final Answer:\s*(.*)', response_text)
+                        action_input_match = re.search(r'Action Input:\s*(.*)', response_text)
+                        
+                        final_answer = final_answer_match.group(1) if final_answer_match else response_text
+                        action_input = action_input_match.group(1) if action_input_match else ""
+                        
+                        output = f"**Final Answer**: {final_answer}"
+                        if action_input:
+                            output += f"\n\n**Action Input**:\n- {action_input}"
+                    
+                    st.markdown(output)
 
+                except Exception as e:
+                    error_msg = f"Error processing response: {str(e)}. The agent returned:\n\n{str(response) if 'response' in locals() else 'No response'}\n\nPlease try rephrasing your question."
+                    st.markdown(error_msg)
+                    output = error_msg
         # st.session_state.messages.append({"role": "assistant", "content": response["output"]})
             st.session_state.messages.append({"role": "assistant", "content": output})
        
