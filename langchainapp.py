@@ -32,7 +32,9 @@ The AI agent will translate your questions into code, execute it, and return the
 
 # Sidebar for API key input and configuration
 st.sidebar.header("Configuration")
-openrouter_api_key = st.sidebar.text_input("Enter your OpenRouter API Key", type="password")
+# openrouter_api_key = st.sidebar.text_input("Enter your OpenRouter API Key", type="password")
+# 
+openrouter_api_key = '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'
 st.sidebar.markdown("This app uses Google's Gemini 2.5 model through OpenRouter.")
 
 # Initialize session state variables if they don't exist
@@ -57,6 +59,7 @@ if uploaded_file is not None and not st.session_state.file_uploaded:
         
         # Initialize the LLM with OpenRouter if API key is provided
         if openrouter_api_key:
+            openrouter_api_key = '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'
             llm = OpenAI(
                 model_name="google/gemini-2.5-pro-exp-03-25:free",
                 openai_api_key=openrouter_api_key,
