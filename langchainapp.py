@@ -49,15 +49,17 @@ else:
             max_retries=2
         )
 
+        # Create the agent
         agent = create_pandas_dataframe_agent(
             llm,
             df,
-            verbose=False,  # Disable verbose logging
+            verbose=False,
             handle_parsing_errors=True,
             allow_dangerous_code=True,
-            return_intermediate_steps=True
-        )
-
+            output_parser=output_parser, 
+                        max_iterations=5,
+            early_stopping_method="generate")
+        
         if "messages" not in st.session_state:
             st.session_state.messages = []
 
