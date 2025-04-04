@@ -53,15 +53,16 @@ else:
         agent = create_pandas_dataframe_agent(
             llm,
             df,
-            verbose=False,
+            verbose=True,
             handle_parsing_errors=True,
             allow_dangerous_code=True,
             output_parser=output_parser, 
                         max_iterations=5,
-            early_stopping_method="generate")
-        
+            early_stopping_method="generate"
+
+        )
         if "messages" not in st.session_state:
-            st.session_state.messages = []
+                st.session_state.messages = []
 
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
@@ -73,23 +74,27 @@ else:
                 st.markdown(prompt)
 
             with st.chat_message("assistant"):
+                st_callback = StreamlitCallbackHandler(st.container())
                 try:
-                    # Run agent without callback handler to suppress intermediate output
-                    response = agent.invoke({"input": prompt})
+                    response = agent.invoke(
+                        {"input": prompt},
+                        config={"callbacks": [st_callback]}
+                    )
                     
-                    # Extract components
+                    # Extract final answer
                     final_answer = response.get("output", "")
-                    action_inputs = [
-                        step[0].tool_input 
-                        for step in response.get("intermediate_steps", []) 
-                        if step and hasattr(step[0], 'tool_input')
-                    ]
                     
-                    # Format clean output
-                    output = f"**Final Answer**: {final_answer}"
+                    # Extract action inputs from intermediate steps
+                    action_inputs = []
+                    for step in response.get("intermediate_steps", []):
+                        if len(step) > 0 and hasattr(step[0], 'tool_input'):
+                            action_inputs.append(step[0].tool_input)
+                    
+                    # Format output
+                    output = f"**Final Answer**: {final_answer}\n\n"
                     if action_inputs:
-                        output += "\n\n**Code Used**:\n```python\n"
-                        output += "\n".join(str(input) for input in action_inputs)
+                        output += "**Code Used**:\n```python\n"
+                        output += "\n".join([str(input) for input in action_inputs])
                         output += "\n```"
                     
                     st.markdown(output)
@@ -99,5 +104,6 @@ else:
                     st.markdown(output)
 
             st.session_state.messages.append({"role": "assistant", "content": output})
-    else:
-        st.info("Please upload a CSV file to get started.")
+
+else:
+    st.info("Please upload a CSV file to get started.")
