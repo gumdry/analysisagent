@@ -105,5 +105,5 @@ else:
 
             st.session_state.messages.append({"role": "assistant", "content": output})
 
-else:
-    st.info("Please upload a CSV file to get started.")
+    else:
+        st.info("Please upload a CSV file to get started.")
