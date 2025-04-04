@@ -70,60 +70,54 @@ else:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
-        # if prompt := st.chat_input("Ask a question about your data:"):
-        #     st.session_state.messages.append({"role": "user", "content": prompt})
-        #     with st.chat_message("user"):
-        #         st.markdown(prompt)
-
-        #     with st.chat_message("assistant"):
-        #         callback = StreamlitCallbackHandler(st.container())
-        #         response = agent.invoke(
-        #             {"input": prompt},
-        #             config={"callbacks": [callback], "handle_parsing_errors": True}
-        #         )
-        #         st.markdown(response["output"])
-
-        #     st.session_state.messages.append({"role": "assistant", "content": response["output"]})
         if prompt := st.chat_input("Ask a question about your data:"):
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
-                st.markdown(prompt)
+            # st.session_state.messages.append({"role": "user", "content": prompt})
+            # with st.chat_message("user"):
+            #     st.markdown(prompt)
 
-            with st.chat_message("assistant"):
-                st_callback = StreamlitCallbackHandler(st.container())
-                try:
-                    response = agent.invoke(
-                        {"input": prompt},
-                        config={"callbacks": [st_callback]}
+            # with st.chat_message("assistant"):
+            #     callback = StreamlitCallbackHandler(st.container())
+
+            #     response = agent.invoke(
+            #         {"input": prompt},
+            #         config={"callbacks": [callback], "handle_parsing_errors": True}
+            #     )
+
+            #     st.markdown(response["output"])
+            st_callback = StreamlitCallbackHandler(st.container())
+            try:
+                response = agent.invoke(
+                    {"input": prompt},
+                    config={"callbacks": [st_callback]}
+                )
+                
+                # Extract components from response
+                final_answer = response["output"]
+                intermediate_steps = response["intermediate_steps"]
+                
+                # Extract action inputs from intermediate steps
+                action_inputs = [
+                    str(step[0].tool_input) 
+                    for step in intermediate_steps 
+                    if step and hasattr(step[0], 'tool_input')
+                ]
+                
+                # Format the output
+                formatted_output = f"**Final Answer**: {final_answer}"
+                if action_inputs:
+                    formatted_output += "\n\n**Action Inputs**:\n" + "\n".join(
+                        [f"- {input}" for input in action_inputs]
                     )
-                    
-                    # Extract components from response
-                    final_answer = response["output"]
-                    intermediate_steps = response["intermediate_steps"]
-                    
-                    # Extract action inputs from intermediate steps
-                    action_inputs = [
-                        str(step[0].tool_input) 
-                        for step in intermediate_steps 
-                        if step and hasattr(step[0], 'tool_input')
-                    ]
-                    
-                    # Format the output
-                    formatted_output = f"**Final Answer**: {final_answer}"
-                    if action_inputs:
-                        formatted_output += "\n\n**Action Inputs**:\n" + "\n".join(
-                            [f"- {input}" for input in action_inputs]
-                        )
-                    
-                    st.markdown(formatted_output)
-                    output = formatted_output
+                
+                st.markdown(formatted_output)
+                output = formatted_output
+            except Exception as e:
+                output = f"Error: {str(e)}. Please try rephrasing your question."
+                st.markdown(output)
 
-                except Exception as e:
-                    output = f"Error: {str(e)}. Please try rephrasing your question."
-                    st.markdown(output)
-
+        # st.session_state.messages.append({"role": "assistant", "content": response["output"]})
         st.session_state.messages.append({"role": "assistant", "content": output})
-
+       
 
     else:
         st.info("Please upload a CSV file to get started.")
