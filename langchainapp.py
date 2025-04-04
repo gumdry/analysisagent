@@ -12,8 +12,10 @@ from langchain.prompts import PromptTemplate
 # openrouter_api_key = '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'
 # Streamlit app setup
 st.title("Data Analysis Agent with Streamlit")
+
 st.sidebar.title("Settings")
 api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
+# api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
 api_key =openrouter_api_key
 if not api_key:
     
