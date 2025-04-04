@@ -9,12 +9,10 @@ from langchain.output_parsers.fix import OutputFixingParser
 from langchain.prompts import PromptTemplate
 
 # Load environment variables
-openrouter_api_key = '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'
 st.title("Data Analysis Agent with Streamlit")
 
 st.sidebar.title("Settings")
-# api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
-api_key = openrouter_api_key
+api_key = st.sidebar.text_input("OpenRouter API Key", type="password")
 
 if not api_key:
     
@@ -32,7 +30,7 @@ else:
 
         # Initialize the LLM
         llm = OpenAI(
-            model_name="google/gemini-2.5-pro-exp-03-25:free",
+            model_name="deepseek/deepseek-v3-base:free",
             openai_api_key=api_key,
             base_url="https://openrouter.ai/api/v1",
             streaming=True
