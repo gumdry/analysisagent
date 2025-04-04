@@ -14,9 +14,11 @@ openrouter_api_key = 'sk-or-v1-8aa264d19b38d199106b690649960fa8f508a992e85f500b1
 st.title("Data Analysis Agent with Streamlit")
 st.sidebar.title("Settings")
 # api_key = st.sidebar.text_input("OpenRouter API Key", type="password", value=openrouter_api_key)
-
+api_key =openrouter_api_key
 if not api_key:
+    
     st.error("Please enter your OpenRouter API Key in the sidebar.")
+
 else:
     # File uploader for CSV
     uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
@@ -30,7 +32,7 @@ else:
         # Initialize the LLM
         llm = OpenAI(
             model_name="google/gemini-2.5-pro-exp-03-25:free",
-            openai_api_key=openrouter_api_key,
+            openai_api_key=api_key,
             base_url="https://openrouter.ai/api/v1",
             streaming=True
         )
