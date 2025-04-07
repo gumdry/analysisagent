@@ -61,7 +61,8 @@ else:
             early_stopping_method="generate"
 
         )
-       if "messages" not in st.session_state:
+        # Initialize session state for chat messages
+        if "messages" not in st.session_state:
             st.session_state.messages = []
 
         for message in st.session_state.messages:
