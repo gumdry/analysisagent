@@ -61,7 +61,7 @@ else:
             early_stopping_method="generate"
 
         )
-        if "messages" not in st.session_state:
+       if "messages" not in st.session_state:
             st.session_state.messages = []
 
         for message in st.session_state.messages:
@@ -74,27 +74,33 @@ else:
                 st.markdown(prompt)
 
             with st.chat_message("assistant"):
+                st_callback = StreamlitCallbackHandler(st.container())
                 try:
-                    # Run agent without callback handler to suppress intermediate output
-                    response = agent.invoke({"input": prompt})
+                    response = agent.invoke(
+                        {"input": prompt},
+                        config={"callbacks": [st_callback]}
+                    )
                     
-                    # Extract components
-                    final_answer = response.get("output", "")
+                    # Extract components from response
+                    final_answer = response["output"]
+                    intermediate_steps = response["intermediate_steps"]
+                    
+                    # Extract action inputs from intermediate steps
                     action_inputs = [
-                        step[0].tool_input 
-                        for step in response.get("intermediate_steps", []) 
+                        str(step[0].tool_input) 
+                        for step in intermediate_steps 
                         if step and hasattr(step[0], 'tool_input')
                     ]
                     
-                    # Format clean output
-                    output = f"**Final Answer**: {final_answer}"
+                    # Format the output
+                    formatted_output = f"**Final Answer**: {final_answer}"
                     if action_inputs:
-                        output += "\n\n**Code Used**:\n```python\n"
-                        output += "\n".join(str(input) for input in action_inputs)
-                        output += "\n```"
+                        formatted_output += "\n\n**Action Inputs**:\n" + "\n".join(
+                            [f"- {input}" for input in action_inputs]
+                        )
                     
-                    st.markdown(output)
-
+                    st.markdown(formatted_output)
+                    output = formatted_output
                 except Exception as e:
                     output = f"Error: {str(e)}. Please try rephrasing your question."
                     st.markdown(output)
