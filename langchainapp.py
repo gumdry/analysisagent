@@ -20,10 +20,13 @@ st.logo("resources/logo.jpg", size="large")
 # Available free models on OpenRouter
 FREE_MODELS = {
     "DeepSeek Free": "deepseek/deepseek-v3-base:free",
-    "Google PaLM 2": "google/palm-2",
-    "Mistral 7B": "mistralai/mistral-7b-instruct:free",
-    "Llama 2 13B": "meta-llama/llama-2-13b-chat:free",
-    "Claude Instant": "anthropic/claude-instant-v1"
+    "meta-llama/llama-4-maverick:free",
+    "qwen/qwen2.5-vl-3b-instruct:free",
+    "meta-llama/llama-4-maverick:free",
+    "google/gemini-2.5-pro-exp-03-25:free",
+    "featherless/qwerky-72b:free",
+    "mistralai/mistral-small-3.1-24b-instruct:free",
+    "open-r1/olympiccoder-32b:free"
 }
 
 
