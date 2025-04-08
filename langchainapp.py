@@ -60,7 +60,7 @@ else:
 
         # Initialize the LLM
         llm = OpenAI(
-            model_name="deepseek/deepseek-v3-base:free",
+            model_name=FREE_MODELS[selected_model],  # Use selected model
             openai_api_key=api_key,
             base_url="https://openrouter.ai/api/v1",
             streaming=True,
@@ -83,12 +83,13 @@ else:
         agent = create_pandas_dataframe_agent(
             llm,
             df,
-            verbose=True,
+            verbose=False,
             handle_parsing_errors=True,
             allow_dangerous_code=True,
             output_parser=output_parser, 
             max_iterations=5,
-            early_stopping_method="generate"
+            early_stopping_method="generate", 
+            return_intermediate_steps=True
         )
 
         # Initialize session state for chat messages
