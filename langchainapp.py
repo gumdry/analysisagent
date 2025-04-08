@@ -20,16 +20,13 @@ st.logo("resources/logo.jpg", size="large")
 # Available free models on OpenRouter
 FREE_MODELS = {
     "DeepSeek Free": "deepseek/deepseek-v3-base:free",
-    "meta-llama/llama-4-maverick:free",
-    "qwen/qwen2.5-vl-3b-instruct:free",
-    "meta-llama/llama-4-maverick:free",
-    "google/gemini-2.5-pro-exp-03-25:free",
-    "featherless/qwerky-72b:free",
-    "mistralai/mistral-small-3.1-24b-instruct:free",
-    "open-r1/olympiccoder-32b:free"
+    "Llama 4 Maverick": "meta-llama/llama-4-maverick:free",
+    "Qwen 2.5 VL Instruct": "qwen/qwen2.5-vl-3b-instruct:free",
+    "Gemini 2.5 Pro": "google/gemini-2.5-pro-exp-03-25:free",
+    "Qwerky 72B": "featherless/qwerky-72b:free",
+    "Mistral Small 3.1": "mistralai/mistral-small-3.1-24b-instruct:free",
+    "OlympicCoder 32B": "open-r1/olympiccoder-32b:free"
 }
-
-
 # App title and description
 st.title("AI Data Analysis Agent")
 st.markdown("""
