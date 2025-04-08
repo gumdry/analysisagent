@@ -154,4 +154,4 @@ st.sidebar.markdown("""
 
 # Footer
 st.sidebar.markdown("---")
-st.sidebar.markdown("Powered by Langchain and Google's Gemini 2.5")
+st.sidebar.markdown("Powered by Langchain and state of art LLMs")
