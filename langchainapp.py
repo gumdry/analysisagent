@@ -8,8 +8,21 @@ import os
 from langchain.output_parsers.fix import OutputFixingParser
 from langchain.prompts import PromptTemplate
 
-# Load environment variables
-st.title("Data Analysis Agent with Streamlit")
+# Page configuration
+st.set_page_config(
+    page_title="AI Data Analysis Agent",
+    page_icon="resources/logo.jpg",
+    layout="wide"
+)
+
+st.logo("resources/logo.jpg", size="large")
+
+# App title and description
+st.title("AI Data Analysis Agent")
+st.markdown("""
+This application allows you to upload a dataset and ask questions about it in natural language.
+The AI agent will translate your questions into code, execute it, and return the results.
+""")
 
 st.sidebar.title("Settings")
 api_key = st.sidebar.text_input("OpenRouter API Key", type="password")
@@ -57,10 +70,10 @@ else:
             handle_parsing_errors=True,
             allow_dangerous_code=True,
             output_parser=output_parser, 
-                        max_iterations=5,
+            max_iterations=5,
             early_stopping_method="generate"
-
         )
+
         # Initialize session state for chat messages
         if "messages" not in st.session_state:
             st.session_state.messages = []
@@ -79,27 +92,26 @@ else:
                 try:
                     response = agent.invoke(
                         {"input": prompt},
-                        config={"callbacks": [st_callback]}
-                    )
-                    
+                        config={"callbacks": [st_callback]}                    
+                        )                    
                     # Extract components from response
                     final_answer = response["output"]
                     intermediate_steps = response["intermediate_steps"]
-                    
+
+
                     # Extract action inputs from intermediate steps
-                    action_inputs = [
+                    action_inputs = [  
                         str(step[0].tool_input) 
                         for step in intermediate_steps 
                         if step and hasattr(step[0], 'tool_input')
-                    ]
-                    
+                    ]                    
                     # Format the output
                     formatted_output = f"**Final Answer**: {final_answer}"
                     if action_inputs:
                         formatted_output += "\n\n**Action Inputs**:\n" + "\n".join(
                             [f"- {input}" for input in action_inputs]
-                        )
-                    
+                        )                    
+                        
                     st.markdown(formatted_output)
                     output = formatted_output
                 except Exception as e:
@@ -109,3 +121,18 @@ else:
             st.session_state.messages.append({"role": "assistant", "content": output})
     else:
         st.info("Please upload a CSV file to get started.")
+
+# Add information and help section
+st.sidebar.subheader("Help")
+st.sidebar.markdown("""
+### Example Questions:
+- What is the total number of women in the data?
+- What's the average age grouped by gender?
+- Create a histogram of salary distribution.
+- Find correlations between all numeric columns.
+- Which products have the highest sales?
+""")
+
+# Footer
+st.sidebar.markdown("---")
+st.sidebar.markdown("Powered by Langchain and Google's Gemini 2.5")
