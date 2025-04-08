@@ -13,9 +13,19 @@ st.set_page_config(
     page_title="AI Data Analysis Agent",
     page_icon="resources/logo.jpg",
     layout="wide"
-)
+    )
 
 st.logo("resources/logo.jpg", size="large")
+
+# Available free models on OpenRouter
+FREE_MODELS = {
+    "DeepSeek Free": "deepseek/deepseek-v3-base:free",
+    "Google PaLM 2": "google/palm-2",
+    "Mistral 7B": "mistralai/mistral-7b-instruct:free",
+    "Llama 2 13B": "meta-llama/llama-2-13b-chat:free",
+    "Claude Instant": "anthropic/claude-instant-v1"
+}
+
 
 # App title and description
 st.title("AI Data Analysis Agent")
@@ -26,6 +36,13 @@ The AI agent will translate your questions into code, execute it, and return the
 
 st.sidebar.title("Settings")
 api_key = st.sidebar.text_input("OpenRouter API Key", type="password")
+
+selected_model = st.sidebar.selectbox(
+    "Choose Model",
+    options=list(FREE_MODELS.keys()),
+    index=0  # Default to DeepSeek
+)
+
 
 if not api_key:
     
@@ -105,13 +122,14 @@ else:
                         for step in intermediate_steps 
                         if step and hasattr(step[0], 'tool_input')
                     ]                    
+
                     # Format the output
                     formatted_output = f"**Final Answer**: {final_answer}"
                     if action_inputs:
                         formatted_output += "\n\n**Action Inputs**:\n" + "\n".join(
                             [f"- {input}" for input in action_inputs]
                         )                    
-                        
+
                     st.markdown(formatted_output)
                     output = formatted_output
                 except Exception as e:
